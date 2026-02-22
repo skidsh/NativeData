@@ -151,6 +151,13 @@ Acceptance criteria:
 - generator output is deterministic across repeated builds
 - benchmark shows generated mapping is not slower than current manual baseline in hot paths
 
+Progress (2026-02-22):
+
+- completed: source generator emits `IEntityMap<T>` and public generated map factory (`NativeDataEntityMaps.Create<T>()`)
+- completed: AOT smoke sample uses generated mapping end-to-end (no handwritten map)
+- completed: deterministic generation test added (`Generator_Output_IsDeterministic_AcrossRuns`)
+- completed: benchmark comparison added and executed (`dotnet run -c Release --project benchmarks/NativeData.Benchmarks/NativeData.Benchmarks.csproj`), with generated mapping equal/faster than manual across measured insert/update/materialize paths
+
 ## Milestone v0.4.0 — Analyzer Pack Expansion
 
 Focus:

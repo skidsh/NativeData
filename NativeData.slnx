@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/benchmarks/">
+    <Project Path="benchmarks/NativeData.Benchmarks/NativeData.Benchmarks.csproj" />
+  </Folder>
   <Folder Name="/samples/">
     <Project Path="samples/NativeData.AotSmoke/NativeData.AotSmoke.csproj" />
   </Folder>
