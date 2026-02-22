@@ -76,6 +76,47 @@ public sealed class BrokenEntity
         Assert.Contains(diagnostics, diagnostic => diagnostic.Id == "NDG0001");
     }
 
+    [Fact]
+    public void Generator_Output_IsDeterministic_AcrossRuns()
+    {
+        const string source = """
+using NativeData.Abstractions;
+
+namespace Demo;
+
+[NativeDataEntity("People", "Id")]
+public sealed record Person(int Id, string Name);
+
+[NativeDataEntity("Orders", "OrderId")]
+public sealed record Order(int OrderId, decimal Total);
+""";
+
+        var firstOutput = GenerateSources(source);
+        var secondOutput = GenerateSources(source);
+
+        Assert.Equal(firstOutput, secondOutput);
+    }
+
+    private static string[] GenerateSources(string source)
+    {
+        var compilation = CreateCompilation(source);
+        var generator = new NativeDataEntityGenerator();
+        var driver = CSharpGeneratorDriver.Create(generator);
+
+        driver = (CSharpGeneratorDriver)driver.RunGeneratorsAndUpdateCompilation(
+            compilation,
+            out var updatedCompilation,
+            out var generatorDiagnostics);
+
+        Assert.Empty(generatorDiagnostics.Where(d => d.Severity == DiagnosticSeverity.Error));
+        Assert.Empty(updatedCompilation.GetDiagnostics().Where(d => d.Severity == DiagnosticSeverity.Error));
+
+        return driver.GetRunResult().Results
+            .SelectMany(result => result.GeneratedSources)
+            .Select(generated => generated.SourceText.ToString())
+            .ToArray();
+    }
+
     private static CSharpCompilation CreateCompilation(string source)
     {
         var syntaxTree = CSharpSyntaxTree.ParseText(source);
