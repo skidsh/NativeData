@@ -10,7 +10,7 @@
     <EnableAotAnalyzer Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">true</EnableAotAnalyzer>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(IsPackable)' == 'true'">
+  <PropertyGroup>
     <VersionPrefix Condition="'$(Version)' == ''">0.0.0-local</VersionPrefix>
     <Authors>NativeData contributors</Authors>
     <Company>NativeData</Company>
