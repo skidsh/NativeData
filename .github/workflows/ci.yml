@@ -13,7 +13,7 @@ permissions:
 jobs:
   build-test-aot:
     name: Build, Test, AOT Smoke
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
@@ -23,7 +23,6 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
-          cache: true
 
       - name: Restore
         run: dotnet restore NativeData.slnx
@@ -35,4 +34,4 @@ jobs:
         run: dotnet test NativeData.slnx --no-build
 
       - name: AOT Smoke Publish
-        run: dotnet publish samples/NativeData.AotSmoke/NativeData.AotSmoke.csproj -c Release -r win-x64 -p:PublishAot=true -p:PublishTrimmed=true
+        run: dotnet publish samples/NativeData.AotSmoke/NativeData.AotSmoke.csproj -c Release -r linux-x64 -p:PublishAot=true -p:PublishTrimmed=true

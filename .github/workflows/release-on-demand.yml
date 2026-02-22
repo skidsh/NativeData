@@ -1,0 +1,48 @@
+name: release-on-demand
+
+on:
+  workflow_dispatch:
+    inputs:
+      publishToNuGet:
+        description: "Publish generated packages to NuGet"
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Release from main
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Configure git identity
+        shell: pwsh
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Run automated release
+        shell: pwsh
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          if ("${{ inputs.publishToNuGet }}" -eq "true") {
+            ./scripts/release.ps1 -Push -PublishToNuGet
+          }
+          else {
+            ./scripts/release.ps1 -Push
+          }

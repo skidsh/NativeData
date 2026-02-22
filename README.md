@@ -45,6 +45,18 @@ dotnet test NativeData.slnx
 dotnet publish samples/NativeData.AotSmoke/NativeData.AotSmoke.csproj -c Release -r win-x64 -p:PublishAot=true -p:PublishTrimmed=true
 ```
 
+## Release automation
+
+Release from `main` with one command (auto-calculates next patch version from git tags):
+
+```powershell
+./scripts/release.ps1 -Push
+```
+
+Or run the on-demand GitHub workflow:
+
+- `.github/workflows/release-on-demand.yml`
+
 ## License
 
 NativeData is open source under the MIT License. See [LICENSE](LICENSE).

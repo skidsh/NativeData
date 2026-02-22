@@ -52,6 +52,18 @@ dotnet publish samples/NativeData.AotSmoke/NativeData.AotSmoke.csproj -c Release
 - Project status/roadmap: `docs/status-and-roadmap.md`
 - Release gates: `docs/release-checklist.md`
 
+## Release Process
+
+- Merge PRs into `main`.
+- Run automated local release from `main`:
+
+```powershell
+./scripts/release.ps1 -Push
+```
+
+- Or trigger on-demand release workflow: `.github/workflows/release-on-demand.yml`.
+- Versioning is automated: the script computes the next patch version from the latest `vX.Y.Z` git tag.
+
 ## License
 
 By contributing, you agree your contributions are licensed under the MIT License in this repository.

@@ -4,6 +4,8 @@ Use this checklist as a go/no-go gate before publishing any NativeData release.
 
 ## How to Use
 
+- Preferred automation: run `./scripts/release.ps1 -Push` from `main`.
+- Alternative automation: trigger `.github/workflows/release-on-demand.yml`.
 - Copy this checklist into the release PR description.
 - Or open a PR with the built-in release template: `?template=release.md`.
 - Mark each item as complete with evidence (link to PR/test run/artifact).
