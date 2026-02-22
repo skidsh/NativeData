@@ -1,3 +1,8 @@
+---
+title: Status and Roadmap
+nav_order: 2
+---
+
 # NativeData Status and Roadmap
 
 This document captures what is implemented today, what is intentionally out of scope, and a proposed roadmap for getting NativeData from MVP foundation to a production-ready AOT/trimming-compliant ORM.
