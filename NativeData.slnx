@@ -3,6 +3,7 @@
     <Project Path="benchmarks/NativeData.Benchmarks/NativeData.Benchmarks.csproj" />
   </Folder>
   <Folder Name="/samples/">
+    <Project Path="samples/NativeData.AnalyzerSmoke/NativeData.AnalyzerSmoke.csproj" />
     <Project Path="samples/NativeData.AotSmoke/NativeData.AotSmoke.csproj" />
   </Folder>
   <Folder Name="/src/">

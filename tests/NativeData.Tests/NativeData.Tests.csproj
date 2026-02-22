@@ -23,6 +23,7 @@
     <ProjectReference Include="..\..\src\NativeData.Core\NativeData.Core.csproj" />
     <ProjectReference Include="..\..\src\NativeData.Abstractions\NativeData.Abstractions.csproj" />
     <ProjectReference Include="..\..\src\NativeData.Generators\NativeData.Generators.csproj" />
+    <ProjectReference Include="..\..\src\NativeData.Analyzers\NativeData.Analyzers.csproj" />
     <ProjectReference Include="..\..\src\NativeData.Sqlite\NativeData.Sqlite.csproj" />
   </ItemGroup>
 
