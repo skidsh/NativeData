@@ -3,6 +3,10 @@ using NativeData.Abstractions;
 
 namespace NativeData.Core;
 
+/// <summary>
+/// SQL-backed repository implementation using an <see cref="IEntityMap{T}"/> and <see cref="ICommandExecutor"/>.
+/// </summary>
+/// <typeparam name="T">Entity type.</typeparam>
 public sealed class SqlRepository<T> : IRepository<T>
     where T : class
 {
@@ -10,6 +14,12 @@ public sealed class SqlRepository<T> : IRepository<T>
     private readonly IEntityMap<T> _entityMap;
     private readonly ISqlDialect _sqlDialect;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SqlRepository{T}"/> class.
+    /// </summary>
+    /// <param name="commandExecutor">Command executor used for SQL operations.</param>
+    /// <param name="entityMap">Entity mapping used for table, key, and materialization behavior.</param>
+    /// <param name="sqlDialect">Optional SQL dialect. Defaults to <see cref="DefaultSqlDialect"/>.</param>
     public SqlRepository(
         ICommandExecutor commandExecutor,
         IEntityMap<T> entityMap,
@@ -20,6 +30,7 @@ public sealed class SqlRepository<T> : IRepository<T>
         _sqlDialect = sqlDialect ?? new DefaultSqlDialect();
     }
 
+    /// <inheritdoc />
     public async ValueTask<T?> GetByIdAsync(object id, CancellationToken cancellationToken = default)
     {
         var tableName = Quote(_entityMap.TableName);
@@ -39,6 +50,7 @@ public sealed class SqlRepository<T> : IRepository<T>
         return null;
     }
 
+    /// <inheritdoc />
     public IAsyncEnumerable<T> QueryAsync(
         string? whereClause = null,
         IReadOnlyList<SqlParameterValue>? parameters = null,
@@ -55,6 +67,7 @@ public sealed class SqlRepository<T> : IRepository<T>
         return _commandExecutor.QueryAsync(query, _entityMap.Materialize, parameters, cancellationToken);
     }
 
+    /// <inheritdoc />
     public ValueTask<int> InsertAsync(T entity, CancellationToken cancellationToken = default)
     {
         var tableName = Quote(_entityMap.TableName);
@@ -64,6 +77,7 @@ public sealed class SqlRepository<T> : IRepository<T>
         return _commandExecutor.ExecuteAsync(command, parameters, cancellationToken);
     }
 
+    /// <inheritdoc />
     public ValueTask<int> UpdateAsync(T entity, CancellationToken cancellationToken = default)
     {
         var tableName = Quote(_entityMap.TableName);
@@ -73,6 +87,7 @@ public sealed class SqlRepository<T> : IRepository<T>
         return _commandExecutor.ExecuteAsync(command, parameters, cancellationToken);
     }
 
+    /// <inheritdoc />
     public ValueTask<int> DeleteByIdAsync(object id, CancellationToken cancellationToken = default)
     {
         var tableName = Quote(_entityMap.TableName);
@@ -108,6 +123,12 @@ public sealed class SqlRepository<T> : IRepository<T>
             }
 
             assignments.Add($"{Quote(parameterName)} = {_sqlDialect.BuildParameterName(parameterName)}");
+        }
+
+        if (assignments.Count == 0)
+        {
+            throw new InvalidOperationException(
+                $"Entity map for '{typeof(T).Name}' must provide at least one non-key parameter for update.");
         }
 
         var keyColumn = Quote(_entityMap.KeyColumn);

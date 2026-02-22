@@ -4,10 +4,13 @@ Use this checklist as a go/no-go gate before publishing any NativeData release.
 
 ## How to Use
 
+- Preferred automation: run `./scripts/release.ps1 -Push` from `main`.
+- Alternative automation: trigger `.github/workflows/release-on-demand.yml`.
 - Copy this checklist into the release PR description.
 - Or open a PR with the built-in release template: `?template=release.md`.
 - Mark each item as complete with evidence (link to PR/test run/artifact).
 - If an item is not applicable, mark it `N/A` with a short reason.
+- CI baseline workflow for these gates: `.github/workflows/ci.yml`.
 
 ## Universal Gates (All Releases)
 
@@ -28,7 +31,7 @@ Use this checklist as a go/no-go gate before publishing any NativeData release.
 
 - [ ] Package versions updated correctly
 - [ ] Package metadata verified (description, tags, repository URL)
-- [ ] Release notes/changelog entry written
+- [ ] Release notes/changelog entry written (use `docs/release-notes-template.md`)
 
 ### Documentation
 

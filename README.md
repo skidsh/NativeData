@@ -1,5 +1,7 @@
 # NativeData
 
+[![CI](https://github.com/skidsh/NativeData/actions/workflows/ci.yml/badge.svg)](https://github.com/skidsh/NativeData/actions/workflows/ci.yml)
+
 NativeData is an AOT-first ORM foundation for .NET 10.
 
 ## Documentation
@@ -33,7 +35,7 @@ NativeData is an AOT-first ORM foundation for .NET 10.
 
 ```bash
 dotnet restore NativeData.slnx
-dotnet build NativeData.slnx
+dotnet build NativeData.slnx -warnaserror
 dotnet test NativeData.slnx
 ```
 
@@ -42,6 +44,18 @@ dotnet test NativeData.slnx
 ```bash
 dotnet publish samples/NativeData.AotSmoke/NativeData.AotSmoke.csproj -c Release -r win-x64 -p:PublishAot=true -p:PublishTrimmed=true
 ```
+
+## Release automation
+
+Release from `main` with one command (auto-calculates next patch version from git tags):
+
+```powershell
+./scripts/release.ps1 -Push
+```
+
+Or run the on-demand GitHub workflow:
+
+- `.github/workflows/release-on-demand.yml`
 
 ## License
 
