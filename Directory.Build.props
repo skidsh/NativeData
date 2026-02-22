@@ -9,4 +9,18 @@
     <IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">true</IsAotCompatible>
     <EnableAotAnalyzer Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">true</EnableAotAnalyzer>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(IsPackable)' == 'true'">
+    <VersionPrefix>0.2.0</VersionPrefix>
+    <Authors>NativeData contributors</Authors>
+    <Company>NativeData</Company>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/skidsh/NativeData</RepositoryUrl>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <PackageProjectUrl>https://github.com/skidsh/NativeData</PackageProjectUrl>
+    <Description>NativeData is an AOT-first ORM foundation for .NET with provider-agnostic runtime contracts and source-generation-oriented architecture.</Description>
+    <PackageTags>NativeData;ORM;AOT;NativeAOT;Trimming;DotNet;Data;SQLite</PackageTags>
+    <PackageReleaseNotes>Use docs/release-notes-template.md as the baseline for release notes and changelog entries.</PackageReleaseNotes>
+  </PropertyGroup>
 </Project>

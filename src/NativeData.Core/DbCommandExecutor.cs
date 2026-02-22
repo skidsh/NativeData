@@ -6,15 +6,23 @@ using NativeData.Abstractions;
 
 namespace NativeData.Core;
 
+/// <summary>
+/// Default ADO.NET-based command executor implementation.
+/// </summary>
 public sealed class DbCommandExecutor : ICommandExecutor
 {
     private readonly IDbConnectionFactory _connectionFactory;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DbCommandExecutor"/> class.
+    /// </summary>
+    /// <param name="connectionFactory">Connection factory used to open database connections.</param>
     public DbCommandExecutor(IDbConnectionFactory connectionFactory)
     {
         _connectionFactory = connectionFactory;
     }
 
+    /// <inheritdoc />
     public async ValueTask<int> ExecuteAsync(
         string commandText,
         IReadOnlyList<SqlParameterValue>? parameters = null,
@@ -25,6 +33,7 @@ public sealed class DbCommandExecutor : ICommandExecutor
         return await command.ExecuteNonQueryAsync(cancellationToken);
     }
 
+    /// <inheritdoc />
     public async IAsyncEnumerable<T> QueryAsync<T>(
         string commandText,
         Func<IDataRecord, T> materializer,

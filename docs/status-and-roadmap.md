@@ -118,6 +118,16 @@ Acceptance criteria:
 - test suite includes edge-case coverage for CRUD SQL generation
 - `dotnet build -warnaserror`, `dotnet test`, and AOT smoke publish pass in CI
 
+Progress (2026-02-21):
+
+- completed: XML documentation enabled for `NativeData.Abstractions` and `NativeData.Core`
+- completed: public API XML docs added across `Abstractions` and `Core`
+- completed: SQL edge-case tests expanded (parameter prefixes, key-only update guard, null parameter values, whitespace `whereClause` behavior)
+- completed: package metadata baseline added (versioning, description, tags, repository URL, release notes template)
+- completed: CI workflow added for v0.2 gates (`.github/workflows/ci.yml`) covering build, test, and AOT smoke publish
+- completed: local validation passes (`dotnet build NativeData.slnx`, `dotnet test`)
+- remaining: none identified for v0.2 foundation hardening scope
+
 ## Milestone v0.3.0 — Generated Mapping (First Usable)
 
 Focus:

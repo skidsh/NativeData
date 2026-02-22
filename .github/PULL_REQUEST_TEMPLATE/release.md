@@ -10,7 +10,7 @@ Milestone: `v0.2.0 | v0.3.0 | v0.4.0 | v0.5.0 | v1.0.0`
 
 ## Linked Artifacts
 
-- Changelog entry:
+- Changelog entry (from `docs/release-notes-template.md`):
 - Relevant milestone/issues:
 - CI run(s):
 

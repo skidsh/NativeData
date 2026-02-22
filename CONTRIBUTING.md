@@ -32,6 +32,15 @@ dotnet publish samples/NativeData.AotSmoke/NativeData.AotSmoke.csproj -c Release
 - Use the standard PR template.
 - For release PRs, open with `?template=release.md` and complete the release checklist.
 
+## CI
+
+- Main CI workflow: `.github/workflows/ci.yml`
+- Run history: `https://github.com/skidsh/NativeData/actions/workflows/ci.yml`
+- CI gates mirror local release checks:
+  - `dotnet build NativeData.slnx -warnaserror`
+  - `dotnet test NativeData.slnx`
+  - `dotnet publish samples/NativeData.AotSmoke/NativeData.AotSmoke.csproj -c Release -r win-x64 -p:PublishAot=true -p:PublishTrimmed=true`
+
 ## Coding Guidelines
 
 - Preserve NativeAOT/trimming-safe design.

@@ -1,5 +1,7 @@
 # NativeData
 
+[![CI](https://github.com/skidsh/NativeData/actions/workflows/ci.yml/badge.svg)](https://github.com/skidsh/NativeData/actions/workflows/ci.yml)
+
 NativeData is an AOT-first ORM foundation for .NET 10.
 
 ## Documentation
@@ -33,7 +35,7 @@ NativeData is an AOT-first ORM foundation for .NET 10.
 
 ```bash
 dotnet restore NativeData.slnx
-dotnet build NativeData.slnx
+dotnet build NativeData.slnx -warnaserror
 dotnet test NativeData.slnx
 ```
 
