@@ -21,6 +21,11 @@
     <PackageProjectUrl>https://github.com/skidsh/NativeData</PackageProjectUrl>
     <Description>NativeData is an AOT-first ORM foundation for .NET with provider-agnostic runtime contracts and source-generation-oriented architecture.</Description>
     <PackageTags>NativeData;ORM;AOT;NativeAOT;Trimming;DotNet;Data;SQLite</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>Use docs/release-notes-template.md as the baseline for release notes and changelog entries.</PackageReleaseNotes>
   </PropertyGroup>
+
+  <ItemGroup Condition="'$(IsPackable)' == 'true' and Exists('$(MSBuildProjectDirectory)\\README.md')">
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 </Project>
