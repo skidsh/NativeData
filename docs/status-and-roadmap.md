@@ -169,6 +169,19 @@ Acceptance criteria:
 - each rule has at least one positive and one negative test case
 - consumers can enable analyzers without introducing false-positive noise in sample app
 
+Progress (2026-02-22):
+
+- completed: ND0001 remediation documentation added (`docs/analyzers/ND0001.md`) and linked from analyzer README
+- completed: ND0001 positive/negative analyzer tests added (`tests/NativeData.Tests/AnalyzerTests.cs`)
+- completed: ND0002 added for runtime assembly loading (`Assembly.Load(string)`) with remediation doc (`docs/analyzers/ND0002.md`) and positive/negative tests
+- completed: ND0003 added for string-based runtime activation (`Activator.CreateInstance(string, string)`) with remediation doc (`docs/analyzers/ND0003.md`) and positive/negative tests
+- completed: ND1001 added as first NativeData-specific rule, validating `[NativeDataEntity]` key-column/property alignment, with remediation doc (`docs/analyzers/ND1001.md`) and positive/negative tests
+- completed: ND1002 added as NativeData-specific attribute-literal rule, validating non-empty `[NativeDataEntity]` `tableName`/`keyColumn` values, with remediation doc (`docs/analyzers/ND1002.md`) and positive/negative tests
+- completed: analyzer release tracking metadata added for `ND0001`, `ND0002`, `ND0003`, `ND1001`, and `ND1002` (`AnalyzerReleases.Unshipped.md`/`AnalyzerReleases.Shipped.md`)
+- completed: smoke sample remains clean under current build validation (no analyzer-rule noise introduced)
+- completed: analyzer consumer smoke project added (`samples/NativeData.AnalyzerSmoke`) with analyzer-project reference and valid NativeData usage to validate no-false-positive consumer build experience
+- completed: analyzer and generator projects are now packable with analyzer/source-generator assemblies emitted under `analyzers/dotnet/cs`; pack artifacts validated from `artifacts/pack-check`
+
 ## Milestone v0.5.0 — Second Provider Validation
 
 Focus:

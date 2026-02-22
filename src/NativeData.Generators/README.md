@@ -15,4 +15,4 @@ dotnet build src/NativeData.Generators/NativeData.Generators.csproj
 
 ## Packaging
 
-This project is currently marked `IsPackable=false` in this repository’s release automation.
+This project is packable and emits source-generator artifacts under `analyzers/dotnet/cs` in the NuGet package.
