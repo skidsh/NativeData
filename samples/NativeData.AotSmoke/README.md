@@ -6,7 +6,7 @@ Minimal sample app used to validate NativeAOT + trimming compatibility.
 
 - Creates a SQLite database
 - Creates table schema
-- Inserts and reads an entity via NativeData repository flow
+- Inserts and reads an entity via NativeData repository flow using source-generated `IEntityMap<T>`
 
 ## Build
 
@@ -17,7 +17,7 @@ dotnet build samples/NativeData.AotSmoke/NativeData.AotSmoke.csproj
 ## AOT smoke publish
 
 ```bash
-dotnet publish samples/NativeData.AotSmoke/NativeData.AotSmoke.csproj -c Release -r linux-x64 -p:PublishAot=true -p:PublishTrimmed=true
+dotnet publish samples/NativeData.AotSmoke/NativeData.AotSmoke.csproj -c Release -r linux-x64
 ```
 
 ## Packaging

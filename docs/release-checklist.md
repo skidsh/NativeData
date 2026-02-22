@@ -24,7 +24,7 @@ Use this checklist as a go/no-go gate before publishing any NativeData release.
 - [ ] `dotnet build NativeData.slnx -warnaserror` succeeds
 - [ ] `dotnet test NativeData.slnx` succeeds
 - [ ] AOT smoke publish succeeds:
-  - [ ] `dotnet publish samples/NativeData.AotSmoke/NativeData.AotSmoke.csproj -c Release -r win-x64 -p:PublishAot=true -p:PublishTrimmed=true`
+  - [ ] `dotnet publish samples/NativeData.AotSmoke/NativeData.AotSmoke.csproj -c Release -r win-x64`
 
 ### API and Compatibility
 

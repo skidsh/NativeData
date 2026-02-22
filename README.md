@@ -42,7 +42,7 @@ dotnet test NativeData.slnx
 ## AOT smoke publish
 
 ```bash
-dotnet publish samples/NativeData.AotSmoke/NativeData.AotSmoke.csproj -c Release -r win-x64 -p:PublishAot=true -p:PublishTrimmed=true
+dotnet publish samples/NativeData.AotSmoke/NativeData.AotSmoke.csproj -c Release -r win-x64
 ```
 
 ## Release automation
