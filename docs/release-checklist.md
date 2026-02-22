@@ -1,3 +1,8 @@
+---
+title: Release Checklist
+nav_order: 3
+---
+
 # NativeData Release Checklist
 
 Use this checklist as a go/no-go gate before publishing any NativeData release.
