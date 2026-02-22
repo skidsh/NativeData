@@ -27,18 +27,31 @@ function Invoke-Step {
 }
 
 function Get-LatestSemVerTag {
-    $tags = (git tag --list "v*" | ForEach-Object { $_.Trim() }) | Where-Object { $_ -match '^v(\d+)\.(\d+)\.(\d+)$' }
+    $rawTags = @(
+        git tag --list "v*" |
+        ForEach-Object { $_.Trim() } |
+        Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
+    )
 
-    if (-not $tags -or $tags.Count -eq 0) {
+    if ($rawTags.Count -eq 0) {
         return $null
     }
 
-    $parsed = $tags | ForEach-Object {
-        $m = [regex]::Match($_, '^v(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)$')
+    $parsed = foreach ($rawTag in $rawTags) {
+        $normalizedTag = $rawTag -replace '^v\.', 'v'
+        $m = [regex]::Match($normalizedTag, '^v(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)$')
+        if (-not $m.Success) {
+            continue
+        }
+
         [pscustomobject]@{
-            Tag = $_
+            Tag = $normalizedTag
             Version = [version]::new([int]$m.Groups['major'].Value, [int]$m.Groups['minor'].Value, [int]$m.Groups['patch'].Value)
         }
+    }
+
+    if (@($parsed).Count -eq 0) {
+        return $null
     }
 
     return ($parsed | Sort-Object Version -Descending | Select-Object -First 1).Tag
@@ -95,6 +108,7 @@ Assert-CleanWorkingTree
 Invoke-Step -Name "Fast-forward main" -Command "git pull --ff-only origin main"
 
 $version = Get-NextVersion -FallbackVersion $DefaultInitialVersion
+
 $tag = "v$version"
 
 & git "show-ref" "--verify" "--quiet" "refs/tags/$tag" | Out-Null
