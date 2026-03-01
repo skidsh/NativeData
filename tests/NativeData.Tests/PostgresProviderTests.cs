@@ -91,7 +91,7 @@ public class PostgresProviderTests
         Assert.Equal("Id", dialect.NormalizeParameterName("Id"));
     }
 
-    [Fact(Skip = "Requires live PostgreSQL — set NATIVEDATA_POSTGRES_CONNECTION to run")]
+    [FactIfEnv("NATIVEDATA_POSTGRES_CONNECTION")]
     public async Task PostgresProvider_RoundTripsEntity()
     {
         var connectionString = Environment.GetEnvironmentVariable("NATIVEDATA_POSTGRES_CONNECTION")

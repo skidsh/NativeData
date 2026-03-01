@@ -1,0 +1,58 @@
+name: postgres-integration
+
+on:
+  push:
+    paths:
+      - 'src/NativeData.Postgres/**'
+      - 'samples/NativeData.PostgresSmoke/**'
+  pull_request:
+    paths:
+      - 'src/NativeData.Postgres/**'
+      - 'samples/NativeData.PostgresSmoke/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  postgres-integration:
+    name: postgres-integration
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: nativedata_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      NATIVEDATA_POSTGRES_CONNECTION: "Host=localhost;Port=5432;Database=nativedata_test;Username=postgres;Password=postgres"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore
+        run: dotnet restore NativeData.slnx
+
+      - name: Build
+        run: dotnet build NativeData.slnx -warnaserror --no-restore
+
+      - name: Postgres integration test
+        run: dotnet test tests/NativeData.Tests/NativeData.Tests.csproj --no-build --filter "FullyQualifiedName~PostgresProvider_RoundTripsEntity"
+
+      - name: Postgres smoke
+        run: dotnet run --project samples/NativeData.PostgresSmoke/NativeData.PostgresSmoke.csproj --no-build
