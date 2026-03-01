@@ -122,7 +122,7 @@ if (-not $SkipValidation) {
     Invoke-Step -Name "Restore" -Command "dotnet restore NativeData.slnx"
     Invoke-Step -Name "Build" -Command "dotnet build NativeData.slnx -c Release -warnaserror --no-restore"
     Invoke-Step -Name "Test" -Command "dotnet test NativeData.slnx -c Release --no-build"
-    Invoke-Step -Name "AOT smoke publish" -Command "dotnet publish samples/NativeData.AotSmoke/NativeData.AotSmoke.csproj -c Release -r $RuntimeIdentifier -p:PublishAot=true -p:PublishTrimmed=true"
+    Invoke-Step -Name "AOT smoke publish" -Command "dotnet publish samples/NativeData.AotSmoke/NativeData.AotSmoke.csproj -c Release -r $RuntimeIdentifier"
 }
 
 $artifactRoot = Join-Path -Path "artifacts" -ChildPath "release/$version"
