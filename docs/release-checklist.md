@@ -73,6 +73,15 @@ Use this checklist as a go/no-go gate before publishing any NativeData release.
 - [ ] Provider setup docs verified by running sample/config steps
 - [ ] AOT smoke publish still passes with second provider referenced
 
+## v0.6.0 — LINQ Query Layer
+
+- [ ] `NativeDataQuery<T>` fluent builder supports `Where`, `OrderBy`, `OrderByDescending`, `Take`, `Skip`
+- [ ] Generated SQL is parameterized and passes through existing `ISqlDialect`
+- [ ] Source-generated predicate translation — no runtime `Expression<T>` compilation
+- [ ] At least one sample uses the LINQ API end-to-end
+- [ ] Existing raw-string `QueryAsync` overload preserved (no breaking change)
+- [ ] AOT smoke publish still passes
+
 ## v1.0.0 — Production Baseline
 
 - [ ] API freeze approved

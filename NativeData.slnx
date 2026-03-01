@@ -5,6 +5,7 @@
   <Folder Name="/samples/">
     <Project Path="samples/NativeData.AnalyzerSmoke/NativeData.AnalyzerSmoke.csproj" />
     <Project Path="samples/NativeData.AotSmoke/NativeData.AotSmoke.csproj" />
+    <Project Path="samples/NativeData.PostgresSmoke/NativeData.PostgresSmoke.csproj" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/NativeData.Abstractions/NativeData.Abstractions.csproj" />
@@ -12,6 +13,7 @@
     <Project Path="src/NativeData.Core/NativeData.Core.csproj" />
     <Project Path="src/NativeData.Generators/NativeData.Generators.csproj" />
     <Project Path="src/NativeData.Sqlite/NativeData.Sqlite.csproj" />
+    <Project Path="src/NativeData.Postgres/NativeData.Postgres.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/NativeData.Tests/NativeData.Tests.csproj" />

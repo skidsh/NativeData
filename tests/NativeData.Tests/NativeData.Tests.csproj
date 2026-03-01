@@ -25,6 +25,7 @@
     <ProjectReference Include="..\..\src\NativeData.Generators\NativeData.Generators.csproj" />
     <ProjectReference Include="..\..\src\NativeData.Analyzers\NativeData.Analyzers.csproj" />
     <ProjectReference Include="..\..\src\NativeData.Sqlite\NativeData.Sqlite.csproj" />
+    <ProjectReference Include="..\..\src\NativeData.Postgres\NativeData.Postgres.csproj" />
   </ItemGroup>
 
 </Project>

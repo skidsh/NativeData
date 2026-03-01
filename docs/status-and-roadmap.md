@@ -207,6 +207,37 @@ Acceptance criteria:
 - sample app (or sample variant) executes CRUD against Postgres
 - AOT trimmed publish remains successful with provider package referenced
 
+Progress (2026-03-01):
+
+- completed: `NativeData.Postgres` provider package added (`PostgresConnectionFactory`, `PostgresSqlDialect`) using Npgsql
+- completed: shared SQL-generation behavioral tests added (`PostgresProviderTests.cs`) covering insert, update, delete, query with both `SqliteSqlDialect` and `PostgresSqlDialect`
+- completed: Postgres round-trip integration test added (skip-annotated; runs when `NATIVEDATA_POSTGRES_CONNECTION` env var is provided)
+- completed: `NativeData.PostgresSmoke` sample added demonstrating CRUD against a live Postgres instance
+- completed: provider compatibility matrix added (`docs/providers.md`)
+- completed: solution file updated with `NativeData.Postgres` and `NativeData.PostgresSmoke` entries
+
+## Milestone v0.6.0 — LINQ Query Layer
+
+Focus:
+
+- replace the raw-string WHERE clause API with a LINQ-style query interface
+
+Target deliverables:
+
+- `IQueryable<T>`-style fluent builder (`NativeDataQuery<T>`) with chainable `Where`, `OrderBy`, `OrderByDescending`, `Take`, and `Skip` support
+- source-generated predicate translators for common expression patterns — avoiding runtime `Expression<T>` compilation to maintain AOT/trimming safety
+- `NativeData.Core` query builder translates the fluent chain to a parameterized SQL string consumed by the existing `ICommandExecutor`
+- `IRepository<T>` extended or supplemented with a `Query()` entry point returning the builder
+- `RepositoryExtensions` convenience methods updated to accept the builder where applicable
+
+Acceptance criteria:
+
+- consumers can write `repository.Query().Where(e => e.Name == "x").OrderBy(e => e.Id).Take(10).ToListAsync()` without writing raw SQL strings
+- generated SQL is parameterized and dialect-aware via the existing `ISqlDialect`
+- AOT smoke publish remains successful
+- at least one sample uses the LINQ API end-to-end (replaces raw `whereClause` usage)
+- existing raw-string `QueryAsync` overload is preserved for backward compatibility
+
 ## Milestone v1.0.0 — Production Baseline
 
 Focus:
@@ -228,14 +259,13 @@ Acceptance criteria:
 ## Post-v1 Backlog (Optional)
 
 - optional lightweight unit-of-work helpers
-- repository convenience extensions
 - compile-time-safe conventions package
 
 ## Non-Goals (Current Direction)
 
 Unless strategy changes, NativeData should avoid in core:
 
-- runtime expression compilation/query providers with broad dynamic behavior
+- runtime expression compilation with broad dynamic behavior (LINQ translation must be source-generated or compile-time-bounded)
 - runtime assembly scanning/discovery
 - proxy-based tracking features that compromise AOT/trimming guarantees
 
