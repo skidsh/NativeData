@@ -5,7 +5,7 @@ nav_order: 2
 
 # NativeData Status and Roadmap
 
-This document captures what is implemented today, what is intentionally out of scope, and a proposed roadmap for getting NativeData from MVP foundation to a production-ready AOT/trimming-compliant ORM.
+The live backlog, milestone progress, and prioritized work items are tracked in the **[NativeData GitHub Project](https://github.com/users/kylek-dev/projects/2)**.
 
 Release execution guidance: see [release-checklist.md](release-checklist.md).
 
@@ -17,285 +17,46 @@ NativeData aims to provide a **nativeAOT/trimming-friendly ORM** for .NET 10 by 
 - explicit provider wiring over dynamic provider loading
 - predictable SQL generation over broad dynamic conventions
 
-## What Exists Today
+## What's Implemented
 
-## Solution and Projects
+| Package | Status |
+|---|---|
+| `NativeData.Abstractions` | ✅ Stable — contracts, `IRepository<T>`, `ISqlDialect`, `IEntityMap<T>` |
+| `NativeData.Core` | ✅ Stable — `SqlRepository<T>`, `DbCommandExecutor`, CRUD |
+| `NativeData.Sqlite` | ✅ Stable — SQLite provider (Microsoft.Data.Sqlite) |
+| `NativeData.Postgres` | ✅ Stable — PostgreSQL provider (Npgsql) |
+| `NativeData.Generators` | ✅ Stable — Roslyn source generator, emits `IEntityMap<T>` at compile time |
+| `NativeData.Analyzers` | ✅ Stable — 5 diagnostic rules (ND0001–ND1002) |
 
-- `NativeData.Abstractions`
-  - Core contracts and primitives:
-    - `IRepository<T>`
-    - `ICommandExecutor`
-    - `IEntityMap<T>`
-    - `ISqlDialect`
-    - `IDbConnectionFactory`
-    - `SqlParameterValue`
-    - `NativeDataEntityAttribute`
+See [providers.md](providers.md) for the provider compatibility matrix.
 
-- `NativeData.Core`
-  - Runtime implementations:
-    - `SqlRepository<T>`
-    - `DbCommandExecutor`
-    - `DefaultSqlDialect`
+## Roadmap
 
-- `NativeData.Sqlite`
-  - First provider package:
-    - `SqliteConnectionFactory`
-    - `SqliteSqlDialect`
-  - Depends on `Microsoft.Data.Sqlite`
+The full milestone backlog, priorities, and work item status are tracked in the **[NativeData GitHub Project](https://github.com/users/kylek-dev/projects/2)**.
 
-- `NativeData.Generators`
-  - Source generator scaffold (`NativeDataEntityGenerator`)
-  - Currently discovers `[NativeDataEntity]` types and emits a simple registry
+| Milestone | Focus | Status |
+|---|---|---|
+| v0.2.0 | Foundation hardening — XML docs, CI, edge-case tests | ✅ Done |
+| v0.3.0 | Source-generated `IEntityMap<T>` end-to-end | ✅ Done |
+| v0.4.0 | Analyzer pack expansion (ND0001–ND1002) | ✅ Done |
+| v0.5.0 | Second provider — PostgreSQL (Npgsql) | ✅ Done |
+| v0.6.0 | LINQ-style fluent query builder (`NativeDataQuery<T>`) | 🔲 Planned |
+| v0.7.0 | `NativeDataContext` + DI integration (`AddNativeData<T>`) | 🔲 Planned |
+| v1.0.0 | API freeze, full docs, production baseline | 🔲 Planned |
 
-- `NativeData.Analyzers`
-  - Analyzer scaffold (`TrimSafetyAnalyzer`)
-  - Currently flags `Type.GetType(...)` usage (`ND0001`) as trim/AOT-risky
+## Architecture
 
-- `NativeData.Tests`
-  - Unit tests for repository SQL generation
-  - SQLite round-trip integration test
+- `Abstractions` — contracts isolated from runtime implementation
+- `Core` — ADO.NET implementation, provider-agnostic
+- `Sqlite` / `Postgres` — provider-specific behavior in dedicated packages
+- `Generators` / `Analyzers` — compile-time tooling, no runtime overhead
+- `samples/` — AOT publish smoke tests and provider samples
 
-- `NativeData.AotSmoke` (sample)
-  - Creates a SQLite DB
-  - Creates table, inserts entity, loads entity by id
-  - Used as publish smoke target for `PublishAot + PublishTrimmed`
+## Non-Goals
 
-## Current Functional Surface
+NativeData intentionally avoids in core:
 
-- CRUD-style repository operations
-  - `GetByIdAsync`
-  - `QueryAsync(whereClause, parameters)`
-  - `InsertAsync`
-  - `UpdateAsync`
-  - `DeleteByIdAsync`
-
-- Dialect abstraction for:
-  - identifier quoting
-  - parameter name normalization and rendering
-
-- Provider-agnostic execution via ADO.NET abstractions
-
-## Quality/Validation in Place
-
-- Solution builds with `-warnaserror`
-- Unit and integration tests pass
-- AOT trimmed publish smoke check passes for sample
-
-## Known Gaps (By Design)
-
-The following are intentionally not implemented in current MVP:
-
+- runtime expression compilation (LINQ translation is source-generated or compile-time-bounded)
+- runtime assembly scanning or dynamic provider loading
+- proxy-based change tracking (incompatible with AOT/trimming)
 - migrations
-- change tracking / identity map
-- LINQ translation/provider
-- generated entity materializers and map emitters (generator is scaffold only)
-- analyzer pack coverage beyond a starter rule
-- provider packages beyond SQLite
-
-## Architecture Notes
-
-NativeData is currently split in a way that supports long-term maintainability:
-
-- contracts (`Abstractions`) are isolated from runtime implementation (`Core`)
-- provider-specific behavior lives in provider packages (currently SQLite)
-- compile-time tooling is separated (`Generators`, `Analyzers`)
-- sample and tests validate real behavior and AOT publish workflow
-
-This layout is suitable for adding providers (PostgreSQL, SQL Server) and for evolving generator/analyzer capabilities without destabilizing the runtime API.
-
-## Proposed Roadmap
-
-## Milestone v0.2.0 — Foundation Hardening
-
-Focus:
-
-- stabilize current APIs and tighten quality checks
-
-Target deliverables:
-
-- public API docs for `Abstractions` and `Core`
-- expanded tests for SQL edge cases (nulls, parameter prefixes, update behavior)
-- package metadata baseline (versioning, descriptions, release notes template)
-
-Acceptance criteria:
-
-- all public APIs compile with XML docs enabled and no documentation warnings
-- test suite includes edge-case coverage for CRUD SQL generation
-- `dotnet build -warnaserror`, `dotnet test`, and AOT smoke publish pass in CI
-
-Progress (2026-02-21):
-
-- completed: XML documentation enabled for `NativeData.Abstractions` and `NativeData.Core`
-- completed: public API XML docs added across `Abstractions` and `Core`
-- completed: SQL edge-case tests expanded (parameter prefixes, key-only update guard, null parameter values, whitespace `whereClause` behavior)
-- completed: package metadata baseline added (versioning, description, tags, repository URL, release notes template)
-- completed: CI workflow added for v0.2 gates (`.github/workflows/ci.yml`) covering build, test, and AOT smoke publish
-- completed: local validation passes (`dotnet build NativeData.slnx`, `dotnet test`)
-- remaining: none identified for v0.2 foundation hardening scope
-
-## Milestone v0.3.0 — Generated Mapping (First Usable)
-
-Focus:
-
-- reduce manual mapping by shipping a practical generator path
-
-Target deliverables:
-
-- generator emits `IEntityMap<T>` for annotated entities
-- generated materialization and parameter binding for common entity shapes
-- diagnostics for unsupported constructors/properties
-
-Acceptance criteria:
-
-- at least one sample entity runs end-to-end using generated map (no handwritten map)
-- generator output is deterministic across repeated builds
-- benchmark shows generated mapping is not slower than current manual baseline in hot paths
-
-Progress (2026-02-22):
-
-- completed: source generator emits `IEntityMap<T>` and public generated map factory (`NativeDataEntityMaps.Create<T>()`)
-- completed: AOT smoke sample uses generated mapping end-to-end (no handwritten map)
-- completed: deterministic generation test added (`Generator_Output_IsDeterministic_AcrossRuns`)
-- completed: benchmark comparison added and executed (`dotnet run -c Release --project benchmarks/NativeData.Benchmarks/NativeData.Benchmarks.csproj`), with generated mapping equal/faster than manual across measured insert/update/materialize paths
-
-## Milestone v0.4.0 — Analyzer Pack Expansion
-
-Focus:
-
-- enforce AOT/trimming-safe usage with actionable diagnostics
-
-Target deliverables:
-
-- expanded rules for reflection-heavy and trim-risky patterns
-- analyzer release tracking metadata and packaged analyzer quality polish
-- remediation docs for each analyzer rule
-
-Acceptance criteria:
-
-- analyzer package emits documented diagnostics with stable IDs/messages
-- each rule has at least one positive and one negative test case
-- consumers can enable analyzers without introducing false-positive noise in sample app
-
-Progress (2026-02-22):
-
-- completed: ND0001 remediation documentation added (`docs/analyzers/ND0001.md`) and linked from analyzer README
-- completed: ND0001 positive/negative analyzer tests added (`tests/NativeData.Tests/AnalyzerTests.cs`)
-- completed: ND0002 added for runtime assembly loading (`Assembly.Load(string)`) with remediation doc (`docs/analyzers/ND0002.md`) and positive/negative tests
-- completed: ND0003 added for string-based runtime activation (`Activator.CreateInstance(string, string)`) with remediation doc (`docs/analyzers/ND0003.md`) and positive/negative tests
-- completed: ND1001 added as first NativeData-specific rule, validating `[NativeDataEntity]` key-column/property alignment, with remediation doc (`docs/analyzers/ND1001.md`) and positive/negative tests
-- completed: ND1002 added as NativeData-specific attribute-literal rule, validating non-empty `[NativeDataEntity]` `tableName`/`keyColumn` values, with remediation doc (`docs/analyzers/ND1002.md`) and positive/negative tests
-- completed: analyzer release tracking metadata added for `ND0001`, `ND0002`, `ND0003`, `ND1001`, and `ND1002` (`AnalyzerReleases.Unshipped.md`/`AnalyzerReleases.Shipped.md`)
-- completed: smoke sample remains clean under current build validation (no analyzer-rule noise introduced)
-- completed: analyzer consumer smoke project added (`samples/NativeData.AnalyzerSmoke`) with analyzer-project reference and valid NativeData usage to validate no-false-positive consumer build experience
-- completed: analyzer and generator projects are now packable with analyzer/source-generator assemblies emitted under `analyzers/dotnet/cs`; pack artifacts validated from `artifacts/pack-check`
-
-## Milestone v0.5.0 — Second Provider Validation
-
-Focus:
-
-- prove provider abstraction beyond SQLite
-
-Target deliverables:
-
-- `NativeData.Postgres` (Npgsql) provider package
-- dialect-specific SQL/parameter tests shared with SQLite where possible
-- provider compatibility matrix in docs
-
-Acceptance criteria:
-
-- shared repository behavioral tests pass for SQLite and Postgres
-- sample app (or sample variant) executes CRUD against Postgres
-- AOT trimmed publish remains successful with provider package referenced
-
-Progress (2026-03-01):
-
-- completed: `NativeData.Postgres` provider package added (`PostgresConnectionFactory`, `PostgresSqlDialect`) using Npgsql
-- completed: shared SQL-generation behavioral tests added (`PostgresProviderTests.cs`) covering insert, update, delete, query with both `SqliteSqlDialect` and `PostgresSqlDialect`
-- completed: Postgres round-trip integration test added (skip-annotated; runs when `NATIVEDATA_POSTGRES_CONNECTION` env var is provided)
-- completed: `NativeData.PostgresSmoke` sample added demonstrating CRUD against a live Postgres instance
-- completed: provider compatibility matrix added (`docs/providers.md`)
-- completed: solution file updated with `NativeData.Postgres` and `NativeData.PostgresSmoke` entries
-
-## Milestone v0.6.0 — LINQ Query Layer
-
-Focus:
-
-- replace the raw-string WHERE clause API with a LINQ-style query interface
-
-Target deliverables:
-
-- `IQueryable<T>`-style fluent builder (`NativeDataQuery<T>`) with chainable `Where`, `OrderBy`, `OrderByDescending`, `Take`, and `Skip` support
-- source-generated predicate translators for common expression patterns — avoiding runtime `Expression<T>` compilation to maintain AOT/trimming safety
-- `NativeData.Core` query builder translates the fluent chain to a parameterized SQL string consumed by the existing `ICommandExecutor`
-- `IRepository<T>` extended or supplemented with a `Query()` entry point returning the builder
-- `RepositoryExtensions` convenience methods updated to accept the builder where applicable
-
-Acceptance criteria:
-
-- consumers can write `repository.Query().Where(e => e.Name == "x").OrderBy(e => e.Id).Take(10).ToListAsync()` without writing raw SQL strings
-- generated SQL is parameterized and dialect-aware via the existing `ISqlDialect`
-- AOT smoke publish remains successful
-- at least one sample uses the LINQ API end-to-end (replaces raw `whereClause` usage)
-- existing raw-string `QueryAsync` overload is preserved for backward compatibility
-
-## Milestone v0.7.0 — Data Context and DI Integration
-
-Focus:
-
-- eliminate manual per-entity wiring with a scoped context modelled after EF Core's `DbContext`
-
-Target deliverables:
-
-- `NativeDataContext` base class in `NativeData.Core`: holds a single `ICommandExecutor`/`ISqlDialect` and exposes a `Repository<T>(IEntityMap<T>)` factory that creates and caches `SqlRepository<T>` instances per context lifetime
-- `NativeDataContextOptions` / `NativeDataContextOptionsBuilder` for fluent configuration (connection factory, dialect)
-- `AddNativeData<TContext>` extension for `IServiceCollection` (in a new `NativeData.Extensions.DependencyInjection` project) — registers context as scoped, manages connection lifetime per scope
-- users subclass `NativeDataContext` and expose named repository properties backed by source-generated maps (e.g. `public IRepository<Widget> Widgets => Repository(NativeDataEntityMaps.Create<Widget>())`)
-- sample updated to demonstrate context-based usage
-
-Acceptance criteria:
-
-- consumer can inject a typed `AppDataContext : NativeDataContext` and call `db.Widgets.ToListAsync()` with no manual executor/factory wiring at the call site
-- connections are opened per query and closed immediately after use; the context is scoped but does not hold an open connection — connection pooling is handled by the underlying ADO.NET driver
-- context is AOT/trimming-safe: no reflection in base class; entity maps are source-generated by the caller
-- `AddNativeData<TContext>` integrates with `Microsoft.Extensions.DependencyInjection`
-
-## Milestone v1.0.0 — Production Baseline
-
-Focus:
-
-- lock stable API and operational confidence for first general release
-
-Target deliverables:
-
-- API freeze for core contracts
-- finalized docs (getting started, provider setup, diagnostics, limitations)
-- CI gates for build/test/AOT smoke + package validation
-
-Acceptance criteria:
-
-- semver-stable public API approved and tagged
-- generated mapping + analyzer pack + at least two providers are release-quality
-- release checklist completed (tests, performance sanity, docs, package metadata)
-
-## Post-v1 Backlog (Optional)
-
-- optional lightweight unit-of-work helpers
-- compile-time-safe conventions package
-
-## Non-Goals (Current Direction)
-
-Unless strategy changes, NativeData should avoid in core:
-
-- runtime expression compilation with broad dynamic behavior (LINQ translation must be source-generated or compile-time-bounded)
-- runtime assembly scanning/discovery
-- proxy-based tracking features that compromise AOT/trimming guarantees
-
-## Definition of “v1 Ready” (Suggested)
-
-NativeData can be considered v1-ready when:
-
-- public API is documented and stable
-- generated mapping is production-usable
-- analyzer coverage guards the main AOT/trim pitfalls
-- at least two providers pass shared compatibility tests
-- CI includes build, tests, and AOT publish smoke checks
