@@ -12,7 +12,7 @@ var connectionFactory = new PostgresConnectionFactory(connectionString);
 var executor = new DbCommandExecutor(connectionFactory);
 var repository = new SqlRepository<Widget>(executor, NativeDataEntityMaps.Create<Widget>(), new PostgresSqlDialect());
 
-await executor.ExecuteAsync("CREATE TABLE IF NOT EXISTS Widgets (\"Id\" SERIAL PRIMARY KEY, \"Name\" TEXT NOT NULL)");
+await executor.ExecuteAsync("CREATE TABLE IF NOT EXISTS \"Widgets\" (\"Id\" SERIAL PRIMARY KEY, \"Name\" TEXT NOT NULL)");
 
 var inserted = await repository.InsertAsync(new Widget(0, "Postgres-Ready"));
 Console.WriteLine($"Rows inserted: {inserted}");
