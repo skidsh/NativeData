@@ -2,6 +2,8 @@ name: postgres-integration
 
 on:
   push:
+    branches:
+      - main
     paths:
       - 'src/NativeData.Postgres/**'
       - 'samples/NativeData.PostgresSmoke/**'
