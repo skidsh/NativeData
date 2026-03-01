@@ -82,6 +82,16 @@ Use this checklist as a go/no-go gate before publishing any NativeData release.
 - [ ] Existing raw-string `QueryAsync` overload preserved (no breaking change)
 - [ ] AOT smoke publish still passes
 
+## v0.7.0 — Data Context and DI Integration
+
+- [ ] `NativeDataContext` base class exposes `Repository<T>(IEntityMap<T>)` factory with per-scope caching
+- [ ] `NativeDataContextOptions` / builder configure connection factory and dialect
+- [ ] `AddNativeData<TContext>` registers typed context as scoped in `IServiceCollection`
+- [ ] Connections opened per query and closed immediately — context is scoped but holds no open connection; ADO.NET pool handles reuse
+- [ ] At least one sample demonstrates context injection and `db.Widgets.ToListAsync()` usage
+- [ ] No reflection in base class — AOT/trimming-safe
+- [ ] AOT smoke publish still passes
+
 ## v1.0.0 — Production Baseline
 
 - [ ] API freeze approved
