@@ -64,6 +64,78 @@ public class PostgresProviderTests
         Assert.Equal("SELECT * FROM \"TestEntities\"", executor.LastCommandText);
     }
 
+    [Theory]
+    [MemberData(nameof(DoubleQuoteDialects))]
+    public async Task NativeDataQuery_Filter_WithDoubleQuoteDialect_BuildsExpectedCommand(ISqlDialect dialect)
+    {
+        var executor = new RecordingCommandExecutor();
+        var repository = new SqlRepository<TestEntity>(executor, new TestEntityMap(), dialect);
+
+        await repository.Query()
+            .Where(new QueryFilter("Name = @Name", [new SqlParameterValue("Name", "alice")]))
+            .ToListAsync();
+
+        Assert.Equal("SELECT * FROM \"TestEntities\" WHERE Name = @Name", executor.LastCommandText);
+    }
+
+    [Theory]
+    [MemberData(nameof(DoubleQuoteDialects))]
+    public async Task NativeDataQuery_OrderBy_WithDoubleQuoteDialect_BuildsExpectedCommand(ISqlDialect dialect)
+    {
+        var executor = new RecordingCommandExecutor();
+        var repository = new SqlRepository<TestEntity>(executor, new TestEntityMap(), dialect);
+
+        await repository.Query()
+            .OrderBy(new QueryOrder("Name"))
+            .OrderBy(new QueryOrder("Id", Descending: true))
+            .ToListAsync();
+
+        Assert.Equal("SELECT * FROM \"TestEntities\" ORDER BY \"Name\", \"Id\" DESC", executor.LastCommandText);
+    }
+
+    [Theory]
+    [MemberData(nameof(DoubleQuoteDialects))]
+    public async Task NativeDataQuery_Take_WithDoubleQuoteDialect_BuildsExpectedCommand(ISqlDialect dialect)
+    {
+        var executor = new RecordingCommandExecutor();
+        var repository = new SqlRepository<TestEntity>(executor, new TestEntityMap(), dialect);
+
+        await repository.Query()
+            .Take(5)
+            .ToListAsync();
+
+        Assert.Equal("SELECT * FROM \"TestEntities\" LIMIT 5", executor.LastCommandText);
+    }
+
+    [Theory]
+    [MemberData(nameof(DoubleQuoteDialects))]
+    public async Task NativeDataQuery_Skip_WithDoubleQuoteDialect_BuildsExpectedCommand(ISqlDialect dialect)
+    {
+        var executor = new RecordingCommandExecutor();
+        var repository = new SqlRepository<TestEntity>(executor, new TestEntityMap(), dialect);
+
+        await repository.Query()
+            .Skip(10)
+            .ToListAsync();
+
+        Assert.Equal("SELECT * FROM \"TestEntities\" OFFSET 10", executor.LastCommandText);
+    }
+
+    [Theory]
+    [MemberData(nameof(DoubleQuoteDialects))]
+    public async Task NativeDataQuery_TakeSkip_WithDoubleQuoteDialect_BuildsExpectedCommand(ISqlDialect dialect)
+    {
+        var executor = new RecordingCommandExecutor();
+        var repository = new SqlRepository<TestEntity>(executor, new TestEntityMap(), dialect);
+
+        await repository.Query()
+            .Take(5)
+            .Skip(10)
+            .ToListAsync();
+
+        Assert.Equal("SELECT * FROM \"TestEntities\" LIMIT 5 OFFSET 10", executor.LastCommandText);
+    }
+
     [Fact]
     public void PostgresSqlDialect_QuoteIdentifier_UsesDoubleQuotes()
     {
