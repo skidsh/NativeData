@@ -72,3 +72,11 @@ The following are not yet implemented (planned for future milestones):
 - Migrations
 - Change tracking / identity map
 - LINQ translation
+
+## GitHub PR Workflow
+
+- Always create a **new branch** for changes; do not work directly on `main`.
+- Before opening/updating a PR, sync by pulling `main` and merging `main` into the feature branch to minimize unrelated file diffs.
+- In PR descriptions, use one issue-closing keyword per line, for example:
+  - `Closes #20`
+  - `Closes #21`
