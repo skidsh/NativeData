@@ -13,6 +13,7 @@ public sealed class TrimSafetyAnalyzer : DiagnosticAnalyzer
     public const string TypeGetTypeDiagnosticId = "ND0001";
     public const string AssemblyLoadDiagnosticId = "ND0002";
     public const string ActivatorCreateInstanceDiagnosticId = "ND0003";
+    public const string ExpressionCompileDiagnosticId = "ND0004";
     public const string DiagnosticId = TypeGetTypeDiagnosticId;
 
     private static readonly DiagnosticDescriptor TypeGetTypeRule = new(
@@ -42,7 +43,16 @@ public sealed class TrimSafetyAnalyzer : DiagnosticAnalyzer
         isEnabledByDefault: true,
         description: "Use compile-time known types instead of string-based Activator.CreateInstance overloads for AOT/trimming compliance.");
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [TypeGetTypeRule, AssemblyLoadRule, ActivatorCreateInstanceRule];
+    private static readonly DiagnosticDescriptor ExpressionCompileRule = new(
+        ExpressionCompileDiagnosticId,
+        "Avoid runtime expression compilation",
+        "Runtime expression compilation via Compile() is not AOT/trimming-safe",
+        "NativeData.Compatibility",
+        DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description: "Prefer compile-time generated query/predicate translation over Expression/LambdaExpression.Compile() for AOT/trimming compliance.");
+
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [TypeGetTypeRule, AssemblyLoadRule, ActivatorCreateInstanceRule, ExpressionCompileRule];
 
     public override void Initialize(AnalysisContext context)
     {
@@ -84,6 +94,15 @@ public sealed class TrimSafetyAnalyzer : DiagnosticAnalyzer
             symbol.Parameters[0].Type.SpecialType == SpecialType.System_String)
         {
             context.ReportDiagnostic(Diagnostic.Create(ActivatorCreateInstanceRule, invocation.GetLocation()));
+            return;
+        }
+
+        if (symbol.Name == "Compile" &&
+            symbol.ContainingType.ContainingNamespace.ToDisplayString() == "System.Linq.Expressions" &&
+            (symbol.ContainingType.Name == "LambdaExpression" ||
+             symbol.ContainingType.OriginalDefinition.ToDisplayString() == "System.Linq.Expressions.Expression<TDelegate>"))
+        {
+            context.ReportDiagnostic(Diagnostic.Create(ExpressionCompileRule, invocation.GetLocation()));
         }
     }
 }

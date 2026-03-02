@@ -130,6 +130,71 @@ public static class Demo
     }
 
     [Fact]
+    public async Task ND0004_ReportsDiagnostic_ForExpressionCompileUsage()
+    {
+        const string source = """
+using System;
+using System.Linq.Expressions;
+
+public static class Demo
+{
+    public static Func<int> Build()
+    {
+        Expression<Func<int>> expression = () => 42;
+        return expression.Compile();
+    }
+}
+""";
+
+        var diagnostics = await AnalyzeAsync(source);
+
+        Assert.Contains(diagnostics, diagnostic => diagnostic.Id == TrimSafetyAnalyzer.ExpressionCompileDiagnosticId);
+    }
+
+    [Fact]
+    public async Task ND0004_ReportsDiagnostic_ForLambdaExpressionCompileUsage()
+    {
+        const string source = """
+using System;
+using System.Linq.Expressions;
+
+public static class Demo
+{
+    public static Delegate Build()
+    {
+        LambdaExpression expression = (Expression<Func<int>>)(() => 42);
+        return expression.Compile();
+    }
+}
+""";
+
+        var diagnostics = await AnalyzeAsync(source);
+
+        Assert.Contains(diagnostics, diagnostic => diagnostic.Id == TrimSafetyAnalyzer.ExpressionCompileDiagnosticId);
+    }
+
+    [Fact]
+    public async Task ND0004_DoesNotReportDiagnostic_WhenCompileNotUsed()
+    {
+        const string source = """
+using System;
+using System.Linq.Expressions;
+
+public static class Demo
+{
+    public static Expression<Func<int>> Build()
+    {
+        return () => 42;
+    }
+}
+""";
+
+        var diagnostics = await AnalyzeAsync(source);
+
+        Assert.DoesNotContain(diagnostics, diagnostic => diagnostic.Id == TrimSafetyAnalyzer.ExpressionCompileDiagnosticId);
+    }
+
+    [Fact]
     public async Task ND1001_ReportsDiagnostic_WhenNativeDataEntityKeyPropertyMissing()
     {
         const string source = """
