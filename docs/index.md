@@ -73,6 +73,9 @@ var product = await repo.GetByIdAsync(1);
 
 - Repository-style API (`IRepository<T>`)
 - CRUD operations: `GetByIdAsync`, `QueryAsync`, `InsertAsync`, `UpdateAsync`, `DeleteByIdAsync`
+- Fluent query builder (`NativeDataQuery<T>`) with `Where(Expression<Func<T,bool>>)` subset translation
+  - Supported operators: `==`, `!=`, `<`, `<=`, `>`, `>=`, `&&`, `||`, and parentheses
+  - Unsupported constructs throw `NotSupportedException` at query-build time
 - Provider-agnostic execution via ADO.NET abstractions
 - Dialect abstraction for identifier quoting and parameter normalization
 - SQLite provider package
@@ -83,7 +86,7 @@ var product = await repo.GetByIdAsync(1);
 
 - Migrations
 - Change tracking / identity map
-- LINQ translation/provider
+- Full LINQ provider/translation
 
 ## Documentation
 

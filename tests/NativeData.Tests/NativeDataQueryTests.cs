@@ -34,6 +34,45 @@ public class NativeDataQueryTests
     }
 
     [Fact]
+    public async Task ToListAsync_WithExpressionWhere_TranslatesToParameterizedSql()
+    {
+        var executor = new CapturingExecutor([new TestEntity(1, "Alice")]);
+        var repo = new SqlRepository<TestEntity>(executor, new TestEntityMap());
+        var name = "Alice";
+
+        await repo.Query().Where(e => e.Name == name).ToListAsync();
+
+        Assert.Contains("WHERE [Name] = @p0", executor.LastCommandText);
+        Assert.NotNull(executor.LastParameters);
+        Assert.Single(executor.LastParameters!);
+        Assert.Equal("Alice", executor.LastParameters[0].Value);
+    }
+
+    [Fact]
+    public async Task ToListAsync_WithExpressionWhere_TranslatesComparisonAndBooleanOperators()
+    {
+        var executor = new CapturingExecutor([]);
+        var repo = new SqlRepository<TestEntity>(executor, new TestEntityMap());
+
+        await repo.Query().Where(e => e.Id >= 10 && (e.Id < 20 || e.Name != "blocked")).ToListAsync();
+
+        Assert.Contains("WHERE ([Id] >= @p0 AND ([Id] < @p1 OR [Name] <> @p2))", executor.LastCommandText);
+        Assert.NotNull(executor.LastParameters);
+        Assert.Equal(3, executor.LastParameters!.Count);
+    }
+
+    [Fact]
+    public void Where_WithExpressionWhere_ThrowsForUnsupportedConstructs()
+    {
+        var executor = new CapturingExecutor([]);
+        var repo = new SqlRepository<TestEntity>(executor, new TestEntityMap());
+
+        var ex = Assert.Throws<NotSupportedException>(() => repo.Query().Where(e => e.Name.StartsWith("A")));
+
+        Assert.Contains("Unsupported predicate expression", ex.Message);
+    }
+
+    [Fact]
     public async Task ToListAsync_WithOrderBy_AppendsOrderByClause()
     {
         var executor = new CapturingExecutor([]);
@@ -153,6 +192,7 @@ public class NativeDataQueryTests
     private sealed class CapturingExecutor(IReadOnlyList<TestEntity> rows) : ICommandExecutor
     {
         public string? LastCommandText { get; private set; }
+        public IReadOnlyList<SqlParameterValue>? LastParameters { get; private set; }
 
         public ValueTask<int> ExecuteAsync(
             string commandText,
@@ -160,6 +200,7 @@ public class NativeDataQueryTests
             CancellationToken cancellationToken = default)
         {
             LastCommandText = commandText;
+            LastParameters = parameters;
             return ValueTask.FromResult(rows.Count);
         }
 
@@ -170,6 +211,7 @@ public class NativeDataQueryTests
             [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             LastCommandText = commandText;
+            LastParameters = parameters;
             foreach (var row in rows)
             {
                 await Task.CompletedTask;

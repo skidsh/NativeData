@@ -40,7 +40,7 @@ The full milestone backlog, priorities, and work item status are tracked in the 
 | v0.3.0 | Source-generated `IEntityMap<T>` end-to-end | ✅ Done |
 | v0.4.0 | Analyzer pack expansion (ND0001–ND1002) | ✅ Done |
 | v0.5.0 | Second provider — PostgreSQL (Npgsql) | ✅ Done |
-| v0.6.0 | LINQ-style fluent query builder (`NativeDataQuery<T>`) | 🔲 Planned |
+| v0.6.0 | LINQ-style fluent query builder (`NativeDataQuery<T>`) | ✅ Done |
 | v0.7.0 | `NativeDataContext` + DI integration (`AddNativeData<T>`) | 🔲 Planned |
 | v1.0.0 | API freeze, full docs, production baseline | 🔲 Planned |
 

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,6 +40,22 @@ public sealed class NativeDataQuery<T>
     public NativeDataQuery<T> Where(QueryFilter filter)
     {
         _where = filter;
+        return this;
+    }
+
+    /// <summary>
+    /// Filters results using a bounded expression subset and translates it to SQL without runtime compilation.
+    /// Replaces any previously set filter.
+    /// </summary>
+    /// <param name="predicate">
+    /// Predicate composed of comparison operators (<c>==</c>, <c>!=</c>, <c>&lt;</c>, <c>&lt;=</c>, <c>&gt;</c>, <c>&gt;=</c>)
+    /// and boolean operators (<c>&amp;&amp;</c>, <c>||</c>).
+    /// </param>
+    /// <returns>This query builder for chaining.</returns>
+    /// <exception cref="NotSupportedException">Thrown when the predicate uses unsupported constructs.</exception>
+    public NativeDataQuery<T> Where(Expression<Func<T, bool>> predicate)
+    {
+        _where = ExpressionQueryFilterTranslator<T>.Translate(predicate, _entityMap, _sqlDialect);
         return this;
     }
 
