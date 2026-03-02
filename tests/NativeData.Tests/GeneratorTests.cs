@@ -97,6 +97,28 @@ public sealed record Order(int OrderId, decimal Total);
         Assert.Equal(firstOutput, secondOutput);
     }
 
+    [Fact]
+    public void Generator_EmitsFiltersAndOrders_ForAnnotatedEntity()
+    {
+        const string source = """
+using NativeData.Abstractions;
+
+namespace Demo;
+
+[NativeDataEntity("People", "Id")]
+public sealed record Person(int Id, string Name);
+""";
+
+        var generated = string.Join("\n", GenerateSources(source));
+
+        Assert.Contains("class PersonFilters", generated);
+        Assert.Contains("IdEquals(", generated);
+        Assert.Contains("NameEquals(", generated);
+        Assert.Contains("class PersonOrders", generated);
+        Assert.Contains("ById(", generated);
+        Assert.Contains("ByName(", generated);
+    }
+
     private static string[] GenerateSources(string source)
     {
         var compilation = CreateCompilation(source);
