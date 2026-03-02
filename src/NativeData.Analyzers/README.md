@@ -16,6 +16,8 @@ Roslyn analyzer project for NativeData AOT/trimming safety diagnostics.
 	- Remediation: [docs/analyzers/ND0002.md](../../docs/analyzers/ND0002.md)
 - `ND0003` — Avoid string-based runtime activation (`Activator.CreateInstance(string, string)`)
 	- Remediation: [docs/analyzers/ND0003.md](../../docs/analyzers/ND0003.md)
+- `ND0004` — Avoid runtime expression compilation (`Expression.Compile()` / `LambdaExpression.Compile()`)
+	- Remediation: [docs/analyzers/ND0004.md](../../docs/analyzers/ND0004.md)
 - `ND1001` — NativeData entity key column must map to a public property
 	- Remediation: [docs/analyzers/ND1001.md](../../docs/analyzers/ND1001.md)
 - `ND1002` — NativeDataEntity `tableName`/`keyColumn` literals must be non-empty
