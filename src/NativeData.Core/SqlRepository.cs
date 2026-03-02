@@ -136,6 +136,12 @@ public sealed class SqlRepository<T> : IRepository<T>
         return $"UPDATE {tableName} SET {string.Join(", ", assignments)} WHERE {keyColumn} = {keyParameter}";
     }
 
+    /// <summary>
+    /// Creates a fluent query builder for this repository's entity type.
+    /// </summary>
+    /// <returns>A new <see cref="NativeDataQuery{T}"/> scoped to this repository's connection and mapping.</returns>
+    public NativeDataQuery<T> Query() => new(_commandExecutor, _entityMap, _sqlDialect);
+
     private string Quote(string identifier)
     {
         return _sqlDialect.QuoteIdentifier(identifier);

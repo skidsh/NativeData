@@ -103,6 +103,7 @@ public sealed class NativeDataEntityGenerator : IIncrementalGenerator
             var mapTypeName = GetMapTypeName(entity);
             generatedEntries.Add((shape, mapTypeName));
             AppendEntityMap(source, shape, mapTypeName);
+            AppendQueryHelpers(source, shape, entity);
         }
 
         source.AppendLine("public static class NativeDataEntityRegistry");
@@ -386,6 +387,62 @@ public sealed class NativeDataEntityGenerator : IIncrementalGenerator
         source.AppendLine();
         source.AppendLine("        return (T)Convert.ChangeType(value, underlyingType);");
         source.AppendLine("    }");
+        source.AppendLine("}");
+        source.AppendLine();
+    }
+
+    private static void AppendQueryHelpers(StringBuilder source, EntityShape shape, INamedTypeSymbol entity)
+    {
+        var simpleName = entity.Name;
+
+        // {TypeName}Filters static class
+        source.Append("public static class ");
+        source.Append(simpleName);
+        source.AppendLine("Filters");
+        source.AppendLine("{");
+
+        foreach (var property in shape.Properties)
+        {
+            var propName = property.Name;
+            var paramName = propName;
+            source.Append("    /// <summary>Returns a <see cref=\"global::NativeData.Abstractions.QueryFilter\"/> that matches rows where <c>");
+            source.Append(propName);
+            source.AppendLine("</c> equals the given value.</summary>");
+            source.Append("    public static global::NativeData.Abstractions.QueryFilter ");
+            source.Append(propName);
+            source.Append("Equals(");
+            source.Append(property.TypeName);
+            source.Append(" value) => new(\"");
+            source.Append(EscapeForCSharp(propName));
+            source.Append(" = @");
+            source.Append(EscapeForCSharp(paramName));
+            source.Append("\", new global::NativeData.Abstractions.SqlParameterValue[] { new(\"");
+            source.Append(EscapeForCSharp(paramName));
+            source.AppendLine("\", value) });");
+        }
+
+        source.AppendLine("}");
+        source.AppendLine();
+
+        // {TypeName}Orders static class
+        source.Append("public static class ");
+        source.Append(simpleName);
+        source.AppendLine("Orders");
+        source.AppendLine("{");
+
+        foreach (var property in shape.Properties)
+        {
+            var propName = property.Name;
+            source.Append("    /// <summary>Returns a <see cref=\"global::NativeData.Abstractions.QueryOrder\"/> that orders by <c>");
+            source.Append(propName);
+            source.AppendLine("</c>.</summary>");
+            source.Append("    public static global::NativeData.Abstractions.QueryOrder By");
+            source.Append(propName);
+            source.Append("(bool descending = false) => new(\"");
+            source.Append(EscapeForCSharp(propName));
+            source.AppendLine("\", descending);");
+        }
+
         source.AppendLine("}");
         source.AppendLine();
     }
