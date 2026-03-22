@@ -41,7 +41,7 @@ jobs:
         run: dotnet publish samples/NativeData.AotSmoke/NativeData.AotSmoke.csproj -c Release
 
       - name: Pack (verify all packages build)
-        run: dotnet pack NativeData.slnx -c Release --no-build -o artifacts/ci-pack
+        run: dotnet pack NativeData.slnx -c Release --no-restore -o artifacts/ci-pack
 
       - name: Verify NuGet packages produced
         shell: bash
