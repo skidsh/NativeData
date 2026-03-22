@@ -7,14 +7,22 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace NativeData.Analyzers;
 
+/// <summary>
+/// Diagnostic analyzer that detects AOT/trimming-unsafe API calls in user code.
+/// Emits warnings for <c>Type.GetType</c> (ND0001), <c>Assembly.Load(string)</c> (ND0002),
+/// string-based <c>Activator.CreateInstance</c> (ND0003), and <c>Expression.Compile()</c> (ND0004).
+/// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class TrimSafetyAnalyzer : DiagnosticAnalyzer
 {
+    /// <summary>Diagnostic ID emitted when <c>Type.GetType(string)</c> is used.</summary>
     public const string TypeGetTypeDiagnosticId = "ND0001";
+    /// <summary>Diagnostic ID emitted when <c>Assembly.Load(string)</c> is used.</summary>
     public const string AssemblyLoadDiagnosticId = "ND0002";
+    /// <summary>Diagnostic ID emitted when string-based <c>Activator.CreateInstance</c> is used.</summary>
     public const string ActivatorCreateInstanceDiagnosticId = "ND0003";
+    /// <summary>Diagnostic ID emitted when <c>Expression.Compile()</c> or <c>LambdaExpression.Compile()</c> is used.</summary>
     public const string ExpressionCompileDiagnosticId = "ND0004";
-    public const string DiagnosticId = TypeGetTypeDiagnosticId;
 
     private static readonly DiagnosticDescriptor TypeGetTypeRule = new(
         TypeGetTypeDiagnosticId,
@@ -52,8 +60,10 @@ public sealed class TrimSafetyAnalyzer : DiagnosticAnalyzer
         isEnabledByDefault: true,
         description: "Prefer compile-time generated query/predicate translation over Expression/LambdaExpression.Compile() for AOT/trimming compliance.");
 
+    /// <inheritdoc />
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [TypeGetTypeRule, AssemblyLoadRule, ActivatorCreateInstanceRule, ExpressionCompileRule];
 
+    /// <inheritdoc />
     public override void Initialize(AnalysisContext context)
     {
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);

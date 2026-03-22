@@ -16,9 +16,9 @@
     <Company>NativeData</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/skidsh/NativeData</RepositoryUrl>
+    <RepositoryUrl>https://github.com/kylek-dev/NativeData</RepositoryUrl>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <PackageProjectUrl>https://github.com/skidsh/NativeData</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/kylek-dev/NativeData</PackageProjectUrl>
     <Description>NativeData is an AOT-first ORM foundation for .NET with provider-agnostic runtime contracts and source-generation-oriented architecture.</Description>
     <PackageTags>NativeData;ORM;AOT;NativeAOT;Trimming;DotNet;Data;SQLite</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>

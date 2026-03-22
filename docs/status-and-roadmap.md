@@ -22,11 +22,12 @@ NativeData aims to provide a **nativeAOT/trimming-friendly ORM** for .NET 10 by 
 | Package | Status |
 |---|---|
 | `NativeData.Abstractions` | ✅ Stable — contracts, `IRepository<T>`, `ISqlDialect`, `IEntityMap<T>` |
-| `NativeData.Core` | ✅ Stable — `SqlRepository<T>`, `DbCommandExecutor`, CRUD |
+| `NativeData.Core` | ✅ Stable — `SqlRepository<T>`, `DbCommandExecutor`, `NativeDataContext`, `NativeDataQuery<T>` |
 | `NativeData.Sqlite` | ✅ Stable — SQLite provider (Microsoft.Data.Sqlite) |
 | `NativeData.Postgres` | ✅ Stable — PostgreSQL provider (Npgsql) |
 | `NativeData.Generators` | ✅ Stable — Roslyn source generator, emits `IEntityMap<T>` at compile time |
-| `NativeData.Analyzers` | ✅ Stable — 5 diagnostic rules (ND0001–ND1002) |
+| `NativeData.Analyzers` | ✅ Stable — 6 diagnostic rules (ND0001–ND0004, ND1001–ND1002) |
+| `NativeData.Extensions.DependencyInjection` | ✅ Stable — `AddNativeData<TContext>()`, scoped context, DI integration |
 
 See [providers.md](providers.md) for the provider compatibility matrix.
 
@@ -41,8 +42,8 @@ The full milestone backlog, priorities, and work item status are tracked in the 
 | v0.4.0 | Analyzer pack expansion (ND0001–ND1002) | ✅ Done |
 | v0.5.0 | Second provider — PostgreSQL (Npgsql) | ✅ Done |
 | v0.6.0 | LINQ-style fluent query builder (`NativeDataQuery<T>`) | ✅ Done |
-| v0.7.0 | `NativeDataContext` + DI integration (`AddNativeData<T>`) | 🔲 Planned |
-| v1.0.0 | API freeze, full docs, production baseline | 🔲 Planned |
+| v0.7.0 | `NativeDataContext` + DI integration (`AddNativeData<T>`) | ✅ Done |
+| v1.0.0 | API freeze, full docs, production baseline | 🔄 In Progress |
 
 ## Architecture
 

@@ -8,6 +8,12 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace NativeData.Generators;
 
+/// <summary>
+/// Roslyn incremental source generator that processes types annotated with
+/// <see cref="NativeData.Abstractions.NativeDataEntityAttribute"/> and emits
+/// AOT/trimming-safe mapping infrastructure at compile time: an <c>IEntityMap&lt;T&gt;</c>
+/// implementation, a <c>NativeDataEntityRegistry</c>, filter helpers, and order helpers.
+/// </summary>
 [Generator(LanguageNames.CSharp)]
 public sealed class NativeDataEntityGenerator : IIncrementalGenerator
 {

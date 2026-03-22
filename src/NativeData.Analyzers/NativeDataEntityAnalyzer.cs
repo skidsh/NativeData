@@ -6,10 +6,17 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace NativeData.Analyzers;
 
+/// <summary>
+/// Diagnostic analyzer that validates <see cref="NativeData.Abstractions.NativeDataEntityAttribute"/>
+/// usage at compile time. Emits <c>ND1001</c> when the declared key column has no matching public
+/// property, and <c>ND1002</c> when the table name or key column literal is empty or whitespace.
+/// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class NativeDataEntityAnalyzer : DiagnosticAnalyzer
 {
+    /// <summary>Diagnostic ID emitted when the key column has no matching public property.</summary>
     public const string NativeDataEntityKeyPropertyDiagnosticId = "ND1001";
+    /// <summary>Diagnostic ID emitted when the table name or key column literal is empty or whitespace.</summary>
     public const string NativeDataEntityInvalidLiteralDiagnosticId = "ND1002";
 
     private static readonly DiagnosticDescriptor NativeDataEntityKeyPropertyRule = new(
@@ -30,8 +37,10 @@ public sealed class NativeDataEntityAnalyzer : DiagnosticAnalyzer
         isEnabledByDefault: true,
         description: "Ensure [NativeDataEntity] tableName and keyColumn literals are non-empty and non-whitespace.");
 
+    /// <inheritdoc />
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [NativeDataEntityKeyPropertyRule, NativeDataEntityInvalidLiteralRule];
 
+    /// <inheritdoc />
     public override void Initialize(AnalysisContext context)
     {
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);

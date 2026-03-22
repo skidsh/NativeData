@@ -26,7 +26,7 @@ public static class Demo
 
         var diagnostics = await AnalyzeAsync(source);
 
-        Assert.Contains(diagnostics, diagnostic => diagnostic.Id == TrimSafetyAnalyzer.DiagnosticId);
+        Assert.Contains(diagnostics, diagnostic => diagnostic.Id == TrimSafetyAnalyzer.TypeGetTypeDiagnosticId);
     }
 
     [Fact]
@@ -46,7 +46,7 @@ public static class Demo
 
         var diagnostics = await AnalyzeAsync(source);
 
-        Assert.DoesNotContain(diagnostics, diagnostic => diagnostic.Id == TrimSafetyAnalyzer.DiagnosticId);
+        Assert.DoesNotContain(diagnostics, diagnostic => diagnostic.Id == TrimSafetyAnalyzer.TypeGetTypeDiagnosticId);
     }
 
     [Fact]

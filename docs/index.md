@@ -7,9 +7,9 @@ nav_order: 1
 
 NativeData is an **AOT-first ORM foundation** for .NET 10, designed for applications that require Native AOT compilation and trimming compatibility.
 
-[![CI](https://github.com/skidsh/NativeData/actions/workflows/ci.yml/badge.svg)](https://github.com/skidsh/NativeData/actions/workflows/ci.yml)
+[![CI](https://github.com/kylek-dev/NativeData/actions/workflows/ci.yml/badge.svg)](https://github.com/kylek-dev/NativeData/actions/workflows/ci.yml)
 [![NuGet](https://img.shields.io/nuget/v/NativeData.Core.svg)](https://www.nuget.org/packages?q=NativeData)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/skidsh/NativeData/blob/main/LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/kylek-dev/NativeData/blob/main/LICENSE)
 
 ## Why NativeData?
 
@@ -85,32 +85,32 @@ await repo.InsertAsync(new Product { Id = 1, Name = "Widget", Price = 9.99m });
 var product = await repo.GetByIdAsync(1);
 ```
 
-## Current Capabilities (MVP)
+## Capabilities
 
-- Repository-style API (`IRepository<T>`)
-- CRUD operations: `GetByIdAsync`, `QueryAsync`, `InsertAsync`, `UpdateAsync`, `DeleteByIdAsync`
-- Fluent query builder (`NativeDataQuery<T>`) with `Where(Expression<Func<T,bool>>)` subset translation
-  - Supported operators: `==`, `!=`, `<`, `<=`, `>`, `>=`, `&&`, `||`, and parentheses
-  - Unsupported constructs throw `NotSupportedException` at query-build time
-- Provider-agnostic execution via ADO.NET abstractions
-- Dialect abstraction for identifier quoting and parameter normalization
-- SQLite provider package
-- Source generator scaffold for `[NativeDataEntity]`
-- Roslyn analyzer for trim safety (`ND0001`)
+- Repository-style API (`IRepository<T>`) with `GetByIdAsync`, `InsertAsync`, `UpdateAsync`, `DeleteByIdAsync`
+- Fluent query builder (`NativeDataQuery<T>`) with expression-based `Where`, `OrderBy`, `Take`, `Skip`
+  - Source-generated predicate translation — no `Expression.Compile()` at runtime
+  - Supported operators: `==`, `!=`, `<`, `<=`, `>`, `>=`, `&&`, `||`
+- Provider-agnostic ADO.NET execution via `ICommandExecutor` / `ISqlDialect`
+- SQLite and PostgreSQL provider packages
+- DI integration via `AddNativeData<TContext>()` with scoped context and singleton connection factory
+- Roslyn source generator for `[NativeDataEntity]` — emits `IEntityMap<T>`, filter/order helpers at compile time
+- Roslyn analyzer pack — 6 rules covering trim/AOT safety and entity mapping validation (ND0001–ND0004, ND1001–ND1002)
 
-## Out of Scope (MVP)
+## Out of Scope
 
 - Migrations
 - Change tracking / identity map
-- Full LINQ provider/translation
+- Full LINQ translation (current subset is intentional for AOT safety)
 
 ## Documentation
 
+- [Getting Started](getting-started)
 - [DI Integration](di-integration)
 - [Provider compatibility](providers)
 - [Project status and roadmap](status-and-roadmap)
 - [Release checklist](release-checklist)
-- [Contributing guide](https://github.com/skidsh/NativeData/blob/main/CONTRIBUTING.md)
+- [Contributing guide](https://github.com/kylek-dev/NativeData/blob/main/CONTRIBUTING.md)
 
 ## Build from Source
 
@@ -122,4 +122,4 @@ dotnet test NativeData.slnx
 
 ## License
 
-NativeData is open source under the [MIT License](https://github.com/skidsh/NativeData/blob/main/LICENSE).
+NativeData is open source under the [MIT License](https://github.com/kylek-dev/NativeData/blob/main/LICENSE).
