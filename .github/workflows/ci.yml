@@ -46,10 +46,16 @@ jobs:
       - name: Verify NuGet packages produced
         shell: bash
         run: |
-          nupkg_count=$(find artifacts/ci-pack -name "*.nupkg" ! -name "*.symbols.nupkg" | wc -l)
-          echo "Found $nupkg_count .nupkg files"
+          nupkg_count=$(find artifacts/ci-pack -name "*.nupkg" | wc -l)
+          snupkg_count=$(find artifacts/ci-pack -name "*.snupkg" | wc -l)
+          echo "Found $nupkg_count .nupkg and $snupkg_count .snupkg files"
           if [ "$nupkg_count" -lt 7 ]; then
             echo "ERROR: expected at least 7 .nupkg files (one per packable project), found $nupkg_count"
             find artifacts/ci-pack -name "*.nupkg"
+            exit 1
+          fi
+          if [ "$snupkg_count" -lt 7 ]; then
+            echo "ERROR: expected at least 7 .snupkg symbol packages, found $snupkg_count"
+            find artifacts/ci-pack -name "*.snupkg"
             exit 1
           fi

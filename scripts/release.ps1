@@ -136,7 +136,7 @@ if ($PublishToNuGet) {
         throw "NuGet API key missing. Set NUGET_API_KEY or pass -NuGetApiKey."
     }
 
-    $packages = Get-ChildItem -Path $artifactRoot -Filter *.nupkg | Where-Object { $_.Name -notlike "*.snupkg" }
+    $packages = Get-ChildItem -Path $artifactRoot -Filter *.nupkg
     if (-not $packages -or $packages.Count -eq 0) {
         throw "No .nupkg files found at '$artifactRoot'."
     }

@@ -23,6 +23,8 @@
     <PackageTags>NativeData;ORM;AOT;NativeAOT;Trimming;DotNet;Data;SQLite</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>Use docs/release-notes-template.md as the baseline for release notes and changelog entries.</PackageReleaseNotes>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(IsPackable)' == 'true' and Exists('$(MSBuildProjectDirectory)\\README.md')">
