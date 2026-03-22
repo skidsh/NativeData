@@ -36,6 +36,20 @@ All provider packages set `IsAotCompatible` and `IsTrimmable` via `Directory.Bui
 
 Npgsql 8+ includes native AOT support. For AOT publish, ensure your application targets `net8.0` or later and uses `NpgsqlDataSource` or basic connection APIs only.
 
+## DI Configuration
+
+Each provider package ships a `NativeDataOptions` extension method for use with `AddNativeData<TContext>()`:
+
+```csharp
+// SQLite
+services.AddNativeData<AppContext>(o => o.UseSqlite("Data Source=app.db"));
+
+// PostgreSQL
+services.AddNativeData<AppContext>(o => o.UsePostgres("Host=localhost;Database=mydb;Username=app;Password=secret"));
+```
+
+These methods set up the provider's `IDbConnectionFactory` and `ISqlDialect` as singletons. See [DI Integration](di-integration) for connection pooling details.
+
 ## Adding a New Provider
 
 1. Create `src/NativeData.{Provider}/` with:

@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\NativeData.Core\NativeData.Core.csproj" />
     <ProjectReference Include="..\NativeData.Abstractions\NativeData.Abstractions.csproj" />
+    <ProjectReference Include="..\NativeData.Extensions.DependencyInjection\NativeData.Extensions.DependencyInjection.csproj" />
   </ItemGroup>
 
   <ItemGroup>

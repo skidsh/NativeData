@@ -1,19 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\NativeData.Core\NativeData.Core.csproj" />
     <ProjectReference Include="..\NativeData.Abstractions\NativeData.Abstractions.csproj" />
-    <ProjectReference Include="..\NativeData.Extensions.DependencyInjection\NativeData.Extensions.DependencyInjection.csproj" />
+    <ProjectReference Include="..\NativeData.Core\NativeData.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Npgsql" Version="10.0.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.5" />
   </ItemGroup>
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
 </Project>

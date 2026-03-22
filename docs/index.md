@@ -24,8 +24,10 @@ Modern .NET applications increasingly target Native AOT and trimmed publish scen
 | Package | Description |
 |---------|-------------|
 | `NativeData.Abstractions` | Core contracts and primitives (`IRepository<T>`, `IEntityMap<T>`, `ISqlDialect`) |
-| `NativeData.Core` | Runtime implementations (`SqlRepository<T>`, `DbCommandExecutor`) |
-| `NativeData.Sqlite` | SQLite provider (`SqliteConnectionFactory`, `SqliteSqlDialect`) |
+| `NativeData.Core` | Runtime implementations (`SqlRepository<T>`, `DbCommandExecutor`, `NativeDataContext`) |
+| `NativeData.Sqlite` | SQLite provider (`SqliteConnectionFactory`, `SqliteSqlDialect`, `UseSqlite`) |
+| `NativeData.Postgres` | PostgreSQL provider (`PostgresConnectionFactory`, `PostgresSqlDialect`, `UsePostgres`) |
+| `NativeData.Extensions.DependencyInjection` | `AddNativeData<TContext>()` for `Microsoft.Extensions.DependencyInjection` |
 | `NativeData.Generators` | Source generator for `[NativeDataEntity]` annotated types |
 | `NativeData.Analyzers` | Roslyn analyzer for trim/AOT safety checks |
 
@@ -52,7 +54,22 @@ public class Product
 }
 ```
 
-### Configure and use the repository
+### Configure with DI (recommended)
+
+```csharp
+using NativeData.Extensions.DependencyInjection;
+using NativeData.Sqlite;
+
+builder.Services.AddNativeData<AppContext>(o => o.UseSqlite("Data Source=myapp.db"));
+
+// In a handler or service:
+app.MapGet("/products/{id}", async (int id, AppContext db) =>
+    await db.Products.GetByIdAsync(id));
+```
+
+See [DI Integration](di-integration) for full details on context definition, scoped lifecycle, and connection pooling.
+
+### Configure without DI
 
 ```csharp
 using NativeData.Core;
@@ -61,9 +78,8 @@ using NativeData.Sqlite;
 var factory = new SqliteConnectionFactory("Data Source=myapp.db");
 var executor = new DbCommandExecutor(factory);
 var dialect = new SqliteSqlDialect();
-var map = new ProductEntityMap();
 
-var repo = new SqlRepository<Product>(executor, dialect, map);
+var repo = new SqlRepository<Product>(executor, dialect, new ProductEntityMap());
 
 await repo.InsertAsync(new Product { Id = 1, Name = "Widget", Price = 9.99m });
 var product = await repo.GetByIdAsync(1);
@@ -90,6 +106,8 @@ var product = await repo.GetByIdAsync(1);
 
 ## Documentation
 
+- [DI Integration](di-integration)
+- [Provider compatibility](providers)
 - [Project status and roadmap](status-and-roadmap)
 - [Release checklist](release-checklist)
 - [Contributing guide](https://github.com/skidsh/NativeData/blob/main/CONTRIBUTING.md)
