@@ -54,8 +54,8 @@ jobs:
             find artifacts/ci-pack -name "*.nupkg"
             exit 1
           fi
-          if [ "$snupkg_count" -lt 7 ]; then
-            echo "ERROR: expected at least 7 .snupkg symbol packages, found $snupkg_count"
+          if [ "$snupkg_count" -lt 5 ]; then
+            echo "ERROR: expected at least 5 .snupkg symbol packages (Analyzers and Generators ship PDBs inside .nupkg instead), found $snupkg_count"
             find artifacts/ci-pack -name "*.snupkg"
             exit 1
           fi
