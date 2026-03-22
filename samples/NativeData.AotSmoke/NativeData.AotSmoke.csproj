@@ -15,6 +15,11 @@
     <ProjectReference Include="..\..\src\NativeData.Core\NativeData.Core.csproj" />
     <ProjectReference Include="..\..\src\NativeData.Sqlite\NativeData.Sqlite.csproj" />
     <ProjectReference Include="..\..\src\NativeData.Abstractions\NativeData.Abstractions.csproj" />
+    <ProjectReference Include="..\..\src\NativeData.Extensions.DependencyInjection\NativeData.Extensions.DependencyInjection.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.5" />
   </ItemGroup>
 
   <ItemGroup>

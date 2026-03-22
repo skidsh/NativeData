@@ -14,6 +14,7 @@
     <Project Path="src/NativeData.Generators/NativeData.Generators.csproj" />
     <Project Path="src/NativeData.Sqlite/NativeData.Sqlite.csproj" />
     <Project Path="src/NativeData.Postgres/NativeData.Postgres.csproj" />
+    <Project Path="src/NativeData.Extensions.DependencyInjection/NativeData.Extensions.DependencyInjection.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/NativeData.Tests/NativeData.Tests.csproj" />

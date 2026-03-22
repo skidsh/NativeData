@@ -99,10 +99,11 @@ public abstract class NativeDataContext : IAsyncDisposable
     /// Disposes the context and clears the repository cache.
     /// </summary>
     /// <returns>A completed <see cref="ValueTask"/>.</returns>
-    public ValueTask DisposeAsync()
+    public virtual ValueTask DisposeAsync()
     {
         _repositoryCache.Clear();
         _entityMaps.Clear();
+        GC.SuppressFinalize(this);
         return ValueTask.CompletedTask;
     }
 }
